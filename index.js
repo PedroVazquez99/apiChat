@@ -83,6 +83,7 @@ app.get("/estrenos", async (req, res) => {
 
     res.json({ fulfillmentText: responseText });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: "Hubo un error al obtener los pedidos." });
   }
 });
