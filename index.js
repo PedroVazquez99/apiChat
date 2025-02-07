@@ -232,6 +232,7 @@ app.get("/finAnyadir", async (req, res) => {
 // Lógica para manejar los INTENTS de Dialogflow
 app.post("/dialogflow", async (req, res) => {
   try {
+    console.log(req.body);
     BODYInts = req.body;
     const intentName = req.body.queryResult.intent.displayName; // Nombre del intent
     parametros = req.body.queryResult.parameters;
