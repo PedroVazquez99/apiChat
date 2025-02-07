@@ -1,0 +1,23 @@
+{
+  "name": "apichat",
+  "version": "1.0.0",
+  "description": "Esta es la API para nuestro chatBot que se emplea en la asignatura de Analisis y Tendencias en Internet",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "author": "Pedro Vázquez Tévar",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.7.9",
+    "body-parser": "^1.20.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "mongoose": "^8.7.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}
