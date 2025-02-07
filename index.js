@@ -231,40 +231,41 @@ app.get("/finAnyadir", async (req, res) => {
 
 // Lógica para manejar los INTENTS de Dialogflow
 app.post("/dialogflow", async (req, res) => {
-  BODYInts = req.body;
-  const intentName = req.body.queryResult.intent.displayName; // Nombre del intent
-  parametros = req.body.queryResult.parameters;
-  let responseText;
-
-  switch (intentName) {
-    case "estrenos":
-      apiUrl = host + "/estrenos";
-      break;
-    case "finAnyadir": // para añadir lista
-      apiUrl = host + "/finAnyadir";
-      break;
-    case "anyadirALista": // para añadir lista (resumenPeli)
-      const x = await axios.get(
-        api + "/account?" + miKey + "&session_id=" + SESSION_ID
-      );
-      x.status == 200
-        ? (apiUrl = host + "/finAnyadir")
-        : (apiUrl = host + "/confirmarToken");
-      break;
-    case "elegirGenero":
-      console.log("Generos ja");
-      apiUrl = host + "/generos";
-      break;
-    default:
-      responseText = "Lo siento, no entendí tu solicitud.";
-  }
-
   try {
+    BODYInts = req.body;
+    const intentName = req.body.queryResult.intent.displayName; // Nombre del intent
+    parametros = req.body.queryResult.parameters;
+    let responseText;
+
+    switch (intentName) {
+      case "estrenos":
+        apiUrl = host + "/estrenos";
+        break;
+      case "finAnyadir": // para añadir lista
+        apiUrl = host + "/finAnyadir";
+        break;
+      case "anyadirALista": // para añadir lista (resumenPeli)
+        const x = await axios.get(
+          api + "/account?" + miKey + "&session_id=" + SESSION_ID
+        );
+        x.status == 200
+          ? (apiUrl = host + "/finAnyadir")
+          : (apiUrl = host + "/confirmarToken");
+        break;
+      case "elegirGenero":
+        console.log("Generos ja");
+        apiUrl = host + "/generos";
+        break;
+      default:
+        responseText = "Lo siento, no entendí tu solicitud.";
+    }
+
     const apiResponse = await axios.get(apiUrl);
 
     responseText = JSON.stringify(apiResponse.data);
     res.send(responseText);
   } catch (error) {
+    console.log(error);
     responseText = "Hubo un error al obtener los datos.";
   }
 });
