@@ -37,7 +37,7 @@ const options = {
 };
 
 // Middleware para parsear JSON
-app.use(bodyParser.json());
+app.use(express.json());
 
 // Funcion para comparar generos
 function quitarAcentos(str) {
