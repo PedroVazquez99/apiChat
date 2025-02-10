@@ -161,6 +161,7 @@ app.get("/info", async (req, res) => {
       responseText += p.overview + "\r\n" + "\r\n";
       responseText += "APTO PARA MENORES: ";
       responseText += p.adult == true ? "no" : "sí";
+      responseText += "\r\n" + "\r\n";
     });
 
     res.json({ fulfillmentText: responseText });
