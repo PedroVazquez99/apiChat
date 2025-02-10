@@ -65,7 +65,7 @@ async function isSessionActiva() {
 // RUTAS DE LA API
 app.get("/", async (req, res) => {
   res.json({
-    fulfillmentText: "Respuesta de la API:",
+    fulfillmentText: "No le he entendido.",
   });
 });
 
@@ -75,6 +75,7 @@ app.get("/estrenos", async (req, res) => {
     let responseText = "Los últimos estrenos son: ";
     const url = api + "/movie/upcoming?" + langu;
     const response = await axios.get(url, options);
+    PELIS_RECOMENDADAS = response.data;
     responseText += "\r\n";
     response.data.results.forEach((e, idx) => {
       idx += 1;
@@ -136,6 +137,7 @@ app.get("/generos", async (req, res) => {
     }
     res.json({ fulfillmentText: fulfillmentText });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: "Hubo un error al obtener los pedidos." });
   }
 });
@@ -143,8 +145,25 @@ app.get("/generos", async (req, res) => {
 // Resumen de una pelicula
 app.get("/info", async (req, res) => {
   try {
-    let responseText = "Entro en añadir pelicula a la lista.";
-    await res.json({ fulfillmentText: responseText });
+    let responseText = "";
+    const ctxt = intentParams(
+      BODYInts.queryResult.intent.displayName.toLowerCase()
+    );
+    const peliculasFiltradasInfo = ctxt.parameters.number.map(
+      (index) => PELIS_RECOMENDADAS.results[index - 1]
+    );
+
+    peliculasFiltradasInfo.forEach((p, idx) => {
+      idx = idx + 1;
+      responseText += idx + ". " + "[" + p.title + "]" + "\r\n" + "\r\n";
+      responseText += "NOTA: " + p.vote_average.toFixed(2) + "\r\n" + "\r\n";
+      responseText += "SINOPSIS: " + "\r\n";
+      responseText += p.overview + "\r\n" + "\r\n";
+      responseText += "APTO PARA MENORES: ";
+      responseText += p.adult == true ? "no" : "sí";
+    });
+
+    res.json({ fulfillmentText: responseText });
   } catch (error) {
     res.status(500).json({ error: "Hubo un error al obtener los pedidos." });
   }
@@ -237,10 +256,13 @@ app.post("/dialogflow", async (req, res) => {
     const intentName = req.body.queryResult.intent.displayName; // Nombre del intent
     parametros = req.body.queryResult.parameters;
     let responseText;
-
+    console.log(intentName);
     switch (intentName) {
       case "estrenos":
         apiUrl = host + "/estrenos";
+        break;
+      case "infoPelicula":
+        apiUrl = host + "/info";
         break;
       case "finAnyadir": // para añadir lista
         apiUrl = host + "/finAnyadir";
@@ -258,6 +280,7 @@ app.post("/dialogflow", async (req, res) => {
         apiUrl = host + "/generos";
         break;
       default:
+        apiUrl = host + "/";
         responseText = "Lo siento, no entendí tu solicitud.";
     }
 
